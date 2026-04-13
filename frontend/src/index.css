@@ -218,15 +218,90 @@ a {
   font-size: 0.8rem;
   color: var(--color-text-secondary);
   margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--color-border);
 }
 
-.tree-preview {
+/* ─── Tree Node ─────────────────────────────────────────────────── */
+
+.tree-node {
+  user-select: none;
+}
+
+.tree-node-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background 0.12s;
+}
+
+.tree-node-header:hover {
+  background: var(--color-bg);
+}
+
+.tree-node-header.expanded {
+  background: var(--color-bg);
+}
+
+.tree-chevron {
+  flex-shrink: 0;
+  width: 16px;
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  text-align: center;
+}
+
+.tree-chevron.invisible {
+  visibility: hidden;
+}
+
+.tree-node-name {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--color-text);
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tree-node-tags {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+/* ─── Tree Node Details ─────────────────────────────────────────── */
+
+.tree-node-details {
+  background: var(--color-bg);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  margin: 4px 0 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.detail-row {
   font-size: 0.8rem;
   color: var(--color-text-secondary);
-  background: var(--color-bg);
-  padding: 16px;
-  border-radius: var(--radius-md);
-  overflow-x: auto;
+  line-height: 1.5;
+}
+
+.detail-label {
+  font-weight: 600;
+  color: var(--color-text);
+  margin-right: 8px;
+}
+
+.detail-label::after {
+  content: ":";
 }
 
 /* ─── States ────────────────────────────────────────────────────── */

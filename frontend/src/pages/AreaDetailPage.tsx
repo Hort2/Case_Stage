@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { areaService, processService } from "../services/api";
+import { ProcessTree } from "../components/ProcessTree";
 import type { Area, ProcessTreeNode } from "../types";
 
 export function AreaDetailPage() {
@@ -45,16 +46,9 @@ export function AreaDetailPage() {
       ) : (
         <div className="tree-container">
           <p className="tree-hint">
-            {tree.length} processo(s) raiz · Clique para expandir
+            {tree.length} processo(s) raiz · Clique nos processos para expandir
           </p>
-          {/* A árvore expansível será implementada na próxima etapa */}
-          <pre className="tree-preview">
-            {JSON.stringify(tree.map((n) => ({
-              name: n.name,
-              type: n.type,
-              children: n.children.length,
-            })), null, 2)}
-          </pre>
+          <ProcessTree nodes={tree} />
         </div>
       )}
     </div>
