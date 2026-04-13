@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import areaRoutes from "./routes/area.routes";
 
 const app = express();
 
@@ -10,6 +11,6 @@ app.get("/api/health", (_req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });
 });
 
-// As rotas de áreas e processos serão registradas aqui nas próximas etapas
+app.use("/api/areas", areaRoutes);
 
 export default app;
