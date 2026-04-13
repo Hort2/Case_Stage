@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { ProcessTreeNode } from "../types";
 import { StatusBadge } from "./StatusBadge";
 import { TypeIcon } from "./TypeIcon";
@@ -6,17 +6,50 @@ import { TypeIcon } from "./TypeIcon";
 interface ProcessNodeProps {
   node: ProcessTreeNode;
   level: number;
+  searchTerm?: string;
 }
 
-export function ProcessNode({ node, level }: ProcessNodeProps) {
+function hasMatchInSubtree(node: ProcessTreeNode, term: string): boolean {
+  const lower = term.toLowerCase();
+  if (node.name.toLowerCase().includes(lower)) return true;
+  return node.children.some((child) => hasMatchInSubtree(child, lower));
+}
+
+function HighlightedName({ name, term }: { name: string; term: string }) {
+  if (!term) return <>{name}</>;
+
+  const index = name.toLowerCase().indexOf(term.toLowerCase());
+  if (index === -1) return <>{name}</>;
+
+  return (
+    <>
+      {name.slice(0, index)}
+      <mark className="search-highlight">{name.slice(index, index + term.length)}</mark>
+      {name.slice(index + term.length)}
+    </>
+  );
+}
+
+export function ProcessNode({ node, level, searchTerm = "" }: ProcessNodeProps) {
+  const isSearching = searchTerm.length > 0;
+  const nameMatches = isSearching && node.name.toLowerCase().includes(searchTerm.toLowerCase());
+  const subtreeMatches = isSearching && hasMatchInSubtree(node, searchTerm);
+
   const [expanded, setExpanded] = useState(level === 0);
+
+  useEffect(() => {
+    if (isSearching && subtreeMatches) {
+      setExpanded(true);
+    }
+  }, [isSearching, subtreeMatches]);
+
   const hasChildren = node.children.length > 0;
   const hasDetails = node.description || node.tools || node.responsible || node.documentation;
 
   return (
-    <div className="tree-node">
+    <div className={`tree-node ${isSearching && !subtreeMatches ? "tree-node-dimmed" : ""}`}>
       <div
-        className={`tree-node-header ${expanded ? "expanded" : ""}`}
+        className={`tree-node-header ${expanded ? "expanded" : ""} ${nameMatches ? "search-match" : ""}`}
         style={{ paddingLeft: `${level * 24}px` }}
         onClick={() => setExpanded(!expanded)}
       >
@@ -24,7 +57,9 @@ export function ProcessNode({ node, level }: ProcessNodeProps) {
           {expanded ? "▾" : "▸"}
         </span>
 
-        <span className="tree-node-name">{node.name}</span>
+        <span className="tree-node-name">
+          <HighlightedName name={node.name} term={searchTerm} />
+        </span>
 
         <div className="tree-node-tags">
           <TypeIcon type={node.type} />
@@ -65,7 +100,7 @@ export function ProcessNode({ node, level }: ProcessNodeProps) {
 
           {hasChildren &&
             node.children.map((child) => (
-              <ProcessNode key={child.id} node={child} level={level + 1} />
+              <ProcessNode key={child.id} node={child} level={level + 1} searchTerm={searchTerm} />
             ))}
         </div>
       )}

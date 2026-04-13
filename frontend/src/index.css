@@ -205,6 +205,76 @@ a {
   color: var(--color-systemic);
 }
 
+/* ─── Search Bar ────────────────────────────────────────────────── */
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 8px 14px;
+  margin-bottom: 16px;
+  transition: border-color 0.15s;
+}
+
+.search-bar:focus-within {
+  border-color: var(--color-primary);
+}
+
+.search-icon {
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+.search-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-size: 0.85rem;
+  font-family: inherit;
+  color: var(--color-text);
+  outline: none;
+}
+
+.search-input::placeholder {
+  color: var(--color-text-secondary);
+}
+
+.search-clear {
+  border: none;
+  background: none;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  font-size: 0.8rem;
+  padding: 2px 4px;
+  border-radius: var(--radius-sm);
+  line-height: 1;
+  transition: color 0.12s;
+}
+
+.search-clear:hover {
+  color: var(--color-text);
+}
+
+/* ─── Search Highlight ──────────────────────────────────────────── */
+
+.search-highlight {
+  background: #fef08a;
+  color: inherit;
+  border-radius: 2px;
+  padding: 0 1px;
+}
+
+.tree-node-header.search-match {
+  background: #fefce8;
+}
+
+.tree-node-dimmed {
+  opacity: 0.35;
+}
+
 /* ─── Tree ──────────────────────────────────────────────────────── */
 
 .tree-container {

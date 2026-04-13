@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { areaService, processService } from "../services/api";
 import { ProcessTree } from "../components/ProcessTree";
+import { SearchBar } from "../components/SearchBar";
 import type { Area, ProcessTreeNode } from "../types";
 
 export function AreaDetailPage() {
@@ -9,6 +10,7 @@ export function AreaDetailPage() {
   const [area, setArea] = useState<Area | null>(null);
   const [tree, setTree] = useState<ProcessTreeNode[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     if (!id) return;
@@ -45,10 +47,11 @@ export function AreaDetailPage() {
         <p className="empty-state">Nenhum processo cadastrado nesta área.</p>
       ) : (
         <div className="tree-container">
+          <SearchBar value={searchTerm} onChange={setSearchTerm} />
           <p className="tree-hint">
             {tree.length} processo(s) raiz · Clique nos processos para expandir
           </p>
-          <ProcessTree nodes={tree} />
+          <ProcessTree nodes={tree} searchTerm={searchTerm} />
         </div>
       )}
     </div>
