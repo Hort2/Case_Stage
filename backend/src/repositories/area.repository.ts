@@ -16,6 +16,14 @@ export class AreaRepository {
     });
   }
 
+  async findByName(name: string) {
+    return prisma.area.findFirst({
+      where: {
+        name: name.trim(),
+      },
+    });
+  }
+
   async create(data: CreateAreaInput) {
     return prisma.area.create({ data });
   }

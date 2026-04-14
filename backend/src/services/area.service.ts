@@ -19,11 +19,26 @@ export class AreaService {
   }
 
   async create(data: CreateAreaInput) {
+    const existingArea = await repository.findByName(data.name);
+  
+    if (existingArea) {
+      throw { status: 400, message: "Já existe uma área com esse nome" };
+    }
+  
     return repository.create(data);
   }
 
   async update(id: string, data: UpdateAreaInput) {
     await this.findById(id);
+  
+    if (data.name) {
+      const existingArea = await repository.findByName(data.name);
+  
+      if (existingArea && existingArea.id !== id) {
+        throw { status: 400, message: "Já existe uma área com esse nome" };
+      }
+    }
+  
     return repository.update(id, data);
   }
 
