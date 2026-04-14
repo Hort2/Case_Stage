@@ -8,6 +8,8 @@ interface ProcessNodeProps {
   level: number;
   searchTerm?: string;
   onAddChild?: (parentId: string, parentName: string) => void;
+  onEdit?: (node: ProcessTreeNode) => void;
+  onDelete?: (node: ProcessTreeNode) => void;
 }
 
 function hasMatchInSubtree(node: ProcessTreeNode, term: string): boolean {
@@ -31,7 +33,7 @@ function HighlightedName({ name, term }: { name: string; term: string }) {
   );
 }
 
-export function ProcessNode({ node, level, searchTerm = "", onAddChild }: ProcessNodeProps) {
+export function ProcessNode({ node, level, searchTerm = "", onAddChild, onEdit, onDelete }: ProcessNodeProps) {
   const isSearching = searchTerm.length > 0;
   const nameMatches = isSearching && node.name.toLowerCase().includes(searchTerm.toLowerCase());
   const subtreeMatches = isSearching && hasMatchInSubtree(node, searchTerm);
@@ -65,18 +67,35 @@ export function ProcessNode({ node, level, searchTerm = "", onAddChild }: Proces
         <div className="tree-node-tags">
           <TypeIcon type={node.type} />
           <StatusBadge status={node.status} />
-          {onAddChild && (
-            <button
-              className="tree-node-add"
-              title="Adicionar subprocesso"
-              onClick={(e) => {
-                e.stopPropagation();
-                onAddChild(node.id, node.name);
-              }}
-            >
-              +
-            </button>
-          )}
+          <div className="tree-node-actions">
+            {onEdit && (
+              <button
+                className="tree-action-btn"
+                title="Editar processo"
+                onClick={(e) => { e.stopPropagation(); onEdit(node); }}
+              >
+                ✎
+              </button>
+            )}
+            {onAddChild && (
+              <button
+                className="tree-action-btn"
+                title="Adicionar subprocesso"
+                onClick={(e) => { e.stopPropagation(); onAddChild(node.id, node.name); }}
+              >
+                +
+              </button>
+            )}
+            {onDelete && (
+              <button
+                className="tree-action-btn tree-action-danger"
+                title="Excluir processo"
+                onClick={(e) => { e.stopPropagation(); onDelete(node); }}
+              >
+                ✕
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
@@ -113,7 +132,15 @@ export function ProcessNode({ node, level, searchTerm = "", onAddChild }: Proces
 
           {hasChildren &&
             node.children.map((child) => (
-              <ProcessNode key={child.id} node={child} level={level + 1} searchTerm={searchTerm} onAddChild={onAddChild} />
+              <ProcessNode
+                key={child.id}
+                node={child}
+                level={level + 1}
+                searchTerm={searchTerm}
+                onAddChild={onAddChild}
+                onEdit={onEdit}
+                onDelete={onDelete}
+              />
             ))}
         </div>
       )}

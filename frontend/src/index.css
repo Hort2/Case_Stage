@@ -370,33 +370,43 @@ a {
   content: ":";
 }
 
-/* ─── Tree Node Add Button ──────────────────────────────────────── */
+/* ─── Tree Node Action Buttons ──────────────────────────────────── */
 
-.tree-node-add {
-  width: 22px;
-  height: 22px;
+.tree-node-actions {
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 0.12s;
+}
+
+.tree-node-header:hover .tree-node-actions {
+  opacity: 1;
+}
+
+.tree-action-btn {
+  width: 24px;
+  height: 24px;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   background: var(--color-surface);
-  color: var(--color-primary);
-  font-size: 0.85rem;
-  font-weight: 600;
+  color: var(--color-text-secondary);
+  font-size: 0.8rem;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  opacity: 0;
-  transition: opacity 0.12s, background 0.12s;
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
 }
 
-.tree-node-header:hover .tree-node-add {
-  opacity: 1;
-}
-
-.tree-node-add:hover {
+.tree-action-btn:hover {
   background: var(--color-primary);
   color: white;
   border-color: var(--color-primary);
+}
+
+.tree-action-danger:hover {
+  background: #dc2626;
+  border-color: #dc2626;
 }
 
 /* ─── Buttons ───────────────────────────────────────────────────── */

@@ -10,7 +10,10 @@ interface ModalState {
   open: boolean;
   parentId: string | null;
   parentName?: string;
+  editProcess?: ProcessTreeNode;
 }
+
+const MODAL_CLOSED: ModalState = { open: false, parentId: null };
 
 export function AreaDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -18,7 +21,7 @@ export function AreaDetailPage() {
   const [tree, setTree] = useState<ProcessTreeNode[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  const [modal, setModal] = useState<ModalState>({ open: false, parentId: null });
+  const [modal, setModal] = useState<ModalState>(MODAL_CLOSED);
 
   const loadTree = useCallback(() => {
     if (!id) return;
@@ -45,8 +48,28 @@ export function AreaDetailPage() {
     setModal({ open: true, parentId, parentName });
   }
 
+  function openEdit(node: ProcessTreeNode) {
+    setModal({ open: true, parentId: node.parentId, editProcess: node });
+  }
+
+  async function handleDelete(node: ProcessTreeNode) {
+    const childCount = node.children.length;
+    const message = childCount > 0
+      ? `Excluir "${node.name}" e seus ${childCount} subprocesso(s)?`
+      : `Excluir "${node.name}"?`;
+
+    if (!window.confirm(message)) return;
+
+    try {
+      await processService.delete(node.id);
+      loadTree();
+    } catch (err: any) {
+      alert(err.message || "Erro ao excluir processo");
+    }
+  }
+
   function handleFormSuccess() {
-    setModal({ open: false, parentId: null });
+    setModal(MODAL_CLOSED);
     loadTree();
   }
 
@@ -84,6 +107,8 @@ export function AreaDetailPage() {
             nodes={tree}
             searchTerm={searchTerm}
             onAddChild={openCreateChild}
+            onEdit={openEdit}
+            onDelete={handleDelete}
           />
         </div>
       )}
@@ -93,7 +118,8 @@ export function AreaDetailPage() {
           areaId={id}
           parentId={modal.parentId}
           parentName={modal.parentName}
-          onClose={() => setModal({ open: false, parentId: null })}
+          editProcess={modal.editProcess}
+          onClose={() => setModal(MODAL_CLOSED)}
           onSuccess={handleFormSuccess}
         />
       )}

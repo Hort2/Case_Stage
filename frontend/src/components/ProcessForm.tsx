@@ -6,12 +6,13 @@ import {
   PROCESS_TYPE_LABELS,
   PROCESS_STATUS_LABELS,
 } from "../types";
-import type { ProcessType, ProcessStatus } from "../types";
+import type { ProcessType, ProcessStatus, ProcessTreeNode } from "../types";
 
 interface ProcessFormProps {
   areaId: string;
   parentId: string | null;
   parentName?: string;
+  editProcess?: ProcessTreeNode;
   onClose: () => void;
   onSuccess: () => void;
 }
@@ -26,7 +27,19 @@ interface FormData {
   documentation: string;
 }
 
-const INITIAL_FORM: FormData = {
+function toFormData(p: ProcessTreeNode): FormData {
+  return {
+    name: p.name,
+    description: p.description ?? "",
+    type: p.type,
+    status: p.status,
+    tools: p.tools ?? "",
+    responsible: p.responsible ?? "",
+    documentation: p.documentation ?? "",
+  };
+}
+
+const EMPTY_FORM: FormData = {
   name: "",
   description: "",
   type: "manual",
@@ -36,13 +49,26 @@ const INITIAL_FORM: FormData = {
   documentation: "",
 };
 
-export function ProcessForm({ areaId, parentId, parentName, onClose, onSuccess }: ProcessFormProps) {
-  const [form, setForm] = useState<FormData>(INITIAL_FORM);
+export function ProcessForm({ areaId, parentId, parentName, editProcess, onClose, onSuccess }: ProcessFormProps) {
+  const isEditing = !!editProcess;
+  const [form, setForm] = useState<FormData>(editProcess ? toFormData(editProcess) : EMPTY_FORM);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
   function updateField(field: keyof FormData, value: string) {
     setForm((prev) => ({ ...prev, [field]: value }));
+  }
+
+  function buildPayload() {
+    return {
+      name: form.name.trim(),
+      description: form.description.trim() || null,
+      type: form.type,
+      status: form.status,
+      tools: form.tools.trim() || null,
+      responsible: form.responsible.trim() || null,
+      documentation: form.documentation.trim() || null,
+    };
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -51,34 +77,34 @@ export function ProcessForm({ areaId, parentId, parentName, onClose, onSuccess }
     setSaving(true);
 
     try {
-      await processService.create({
-        name: form.name.trim(),
-        description: form.description.trim() || null,
-        type: form.type,
-        status: form.status,
-        tools: form.tools.trim() || null,
-        responsible: form.responsible.trim() || null,
-        documentation: form.documentation.trim() || null,
-        areaId,
-        parentId,
-      });
+      if (isEditing) {
+        await processService.update(editProcess.id, buildPayload());
+      } else {
+        await processService.create({ ...buildPayload(), areaId, parentId });
+      }
       onSuccess();
     } catch (err: any) {
-      setError(err.message || "Erro ao criar processo");
+      setError(err.message || `Erro ao ${isEditing ? "atualizar" : "criar"} processo`);
     } finally {
       setSaving(false);
     }
   }
 
+  const title = isEditing
+    ? "Editar Processo"
+    : parentId
+      ? "Novo Subprocesso"
+      : "Novo Processo";
+
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
-          <h3>{parentId ? "Novo Subprocesso" : "Novo Processo"}</h3>
+          <h3>{title}</h3>
           <button className="modal-close" onClick={onClose}>✕</button>
         </div>
 
-        {parentName && (
+        {parentName && !isEditing && (
           <p className="modal-context">
             Subprocesso de: <strong>{parentName}</strong>
           </p>
@@ -177,7 +203,7 @@ export function ProcessForm({ areaId, parentId, parentName, onClose, onSuccess }
               Cancelar
             </button>
             <button type="submit" className="btn btn-primary" disabled={saving || !form.name.trim()}>
-              {saving ? "Salvando..." : "Criar"}
+              {saving ? "Salvando..." : isEditing ? "Salvar" : "Criar"}
             </button>
           </div>
         </form>
