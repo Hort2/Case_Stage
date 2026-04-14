@@ -50,7 +50,7 @@ Desenvolvido como projeto prático durante minha formação em Engenharia de Sof
 - npm 9+
 
 ### Backend
-```bash
+
 cd backend
 npm install
 npx prisma migrate dev
