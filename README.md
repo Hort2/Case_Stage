@@ -106,6 +106,9 @@ Este projeto demonstra minha capacidade de desenvolver uma aplicação completa,
 
 **Enzo Ramos**
 
+link frontend: https://case-stage-mu.vercel.app/
+
+
 ---
 
 Construído com TypeScript e dedicação ao aprendizado.
