@@ -1,8 +1,9 @@
 import { Link, useLocation } from "react-router-dom";
 
 export function Header() {
-  const location = useLocation();
-  const isHome = location.pathname === "/";
+  const { pathname } = useLocation();
+  const isLanding = pathname === "/";
+  const isAreaDetail = pathname.startsWith("/areas/");
 
   return (
     <header className="header">
@@ -11,9 +12,17 @@ export function Header() {
           <span className="header-icon">◈</span>
           <h1>Process Mapper</h1>
         </Link>
-        {!isHome && (
-          <Link to="/" className="header-back">
+        {isLanding ? (
+          <Link to="/areas" className="header-nav-link">
+            Acessar sistema →
+          </Link>
+        ) : isAreaDetail ? (
+          <Link to="/areas" className="header-back">
             ← Voltar para áreas
+          </Link>
+        ) : (
+          <Link to="/" className="header-back">
+            ← Início
           </Link>
         )}
       </div>
