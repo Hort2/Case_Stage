@@ -7,6 +7,7 @@ interface ProcessNodeProps {
   node: ProcessTreeNode;
   level: number;
   searchTerm?: string;
+  onAddChild?: (parentId: string, parentName: string) => void;
 }
 
 function hasMatchInSubtree(node: ProcessTreeNode, term: string): boolean {
@@ -30,7 +31,7 @@ function HighlightedName({ name, term }: { name: string; term: string }) {
   );
 }
 
-export function ProcessNode({ node, level, searchTerm = "" }: ProcessNodeProps) {
+export function ProcessNode({ node, level, searchTerm = "", onAddChild }: ProcessNodeProps) {
   const isSearching = searchTerm.length > 0;
   const nameMatches = isSearching && node.name.toLowerCase().includes(searchTerm.toLowerCase());
   const subtreeMatches = isSearching && hasMatchInSubtree(node, searchTerm);
@@ -64,6 +65,18 @@ export function ProcessNode({ node, level, searchTerm = "" }: ProcessNodeProps) 
         <div className="tree-node-tags">
           <TypeIcon type={node.type} />
           <StatusBadge status={node.status} />
+          {onAddChild && (
+            <button
+              className="tree-node-add"
+              title="Adicionar subprocesso"
+              onClick={(e) => {
+                e.stopPropagation();
+                onAddChild(node.id, node.name);
+              }}
+            >
+              +
+            </button>
+          )}
         </div>
       </div>
 
@@ -100,7 +113,7 @@ export function ProcessNode({ node, level, searchTerm = "" }: ProcessNodeProps) 
 
           {hasChildren &&
             node.children.map((child) => (
-              <ProcessNode key={child.id} node={child} level={level + 1} searchTerm={searchTerm} />
+              <ProcessNode key={child.id} node={child} level={level + 1} searchTerm={searchTerm} onAddChild={onAddChild} />
             ))}
         </div>
       )}
