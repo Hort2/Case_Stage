@@ -107,6 +107,7 @@ Este projeto demonstra minha capacidade de desenvolver uma aplicação completa,
 **Enzo Ramos**
 
 link frontend: https://case-stage-mu.vercel.app/
+link backend: https://case-stage-qcnv.vercel.app/
 
 
 ---
