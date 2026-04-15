@@ -38,7 +38,7 @@ export function ProcessNode({ node, level, searchTerm = "", onAddChild, onEdit, 
   const nameMatches = isSearching && node.name.toLowerCase().includes(searchTerm.toLowerCase());
   const subtreeMatches = isSearching && hasMatchInSubtree(node, searchTerm);
 
-  const [expanded, setExpanded] = useState(level === 0);
+  const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
     if (isSearching && subtreeMatches) {
