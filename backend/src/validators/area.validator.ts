@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const createAreaSchema = z.object({
   name: z
-    .string({ required_error: "Nome é obrigatório" })
+    .string({ error: "Nome é obrigatório" })
     .min(1, "Nome não pode ser vazio")
     .max(100, "Nome deve ter no máximo 100 caracteres"),
   description: z

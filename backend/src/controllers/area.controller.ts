@@ -15,7 +15,7 @@ export class AreaController {
 
   async findById(req: Request, res: Response) {
     try {
-      const area = await service.findById(req.params.id);
+      const area = await service.findById(req.params.id as string);
       res.json(area);
     } catch (error: any) {
       res.status(error.status || 500).json({ error: error.message });
@@ -33,7 +33,7 @@ export class AreaController {
 
   async update(req: Request, res: Response) {
     try {
-      const area = await service.update(req.params.id, req.body);
+      const area = await service.update(req.params.id as string, req.body);
       res.json(area);
     } catch (error: any) {
       res.status(error.status || 500).json({ error: error.message });
@@ -42,7 +42,7 @@ export class AreaController {
 
   async delete(req: Request, res: Response) {
     try {
-      await service.delete(req.params.id);
+      await service.delete(req.params.id as string);
       res.status(204).send();
     } catch (error: any) {
       res.status(error.status || 500).json({ error: error.message });

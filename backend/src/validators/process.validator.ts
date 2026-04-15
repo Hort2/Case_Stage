@@ -3,7 +3,7 @@ import { PROCESS_TYPES, PROCESS_STATUSES } from "../types";
 
 export const createProcessSchema = z.object({
   name: z
-    .string({ required_error: "Nome é obrigatório" })
+    .string({ error: "Nome é obrigatório" })
     .min(1, "Nome não pode ser vazio")
     .max(150, "Nome deve ter no máximo 150 caracteres"),
   description: z

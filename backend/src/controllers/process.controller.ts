@@ -6,7 +6,7 @@ const service = new ProcessService();
 export class ProcessController {
   async getTree(req: Request, res: Response) {
     try {
-      const tree = await service.getTree(req.params.areaId);
+      const tree = await service.getTree(req.params.areaId as string);
       res.json(tree);
     } catch (error: any) {
       res.status(error.status || 500).json({ error: error.message });
@@ -15,7 +15,7 @@ export class ProcessController {
 
   async findById(req: Request, res: Response) {
     try {
-      const process = await service.findById(req.params.id);
+      const process = await service.findById(req.params.id as string);
       res.json(process);
     } catch (error: any) {
       res.status(error.status || 500).json({ error: error.message });
@@ -33,7 +33,7 @@ export class ProcessController {
 
   async update(req: Request, res: Response) {
     try {
-      const process = await service.update(req.params.id, req.body);
+      const process = await service.update(req.params.id as string, req.body);
       res.json(process);
     } catch (error: any) {
       res.status(error.status || 500).json({ error: error.message });
@@ -42,7 +42,7 @@ export class ProcessController {
 
   async delete(req: Request, res: Response) {
     try {
-      await service.delete(req.params.id);
+      await service.delete(req.params.id as string);
       res.status(204).send();
     } catch (error: any) {
       res.status(error.status || 500).json({ error: error.message });
